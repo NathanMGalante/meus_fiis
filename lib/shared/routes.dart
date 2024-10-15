@@ -1,5 +1,5 @@
 enum Routes {
-  dashboard,
+  home,
 }
 
 extension RoutesExtension on Routes {
