@@ -4,8 +4,17 @@ import 'package:meus_fiis/shared/n_utils/utils/durations.dart';
 import 'package:meus_fiis/shared/storage.dart';
 
 class HomeController extends GetxController {
-  final PageController viewController = PageController(initialPage: 0);
-  final RxInt currentIndex = 0.obs;
+  late final PageController viewController;
+  late final RxInt currentIndex;
+
+  @override
+  void onInit() {
+    final savedIndex = Storage.instance.getInt(StorageKeys.homeViewIndex.name);
+    final initialPage = savedIndex ?? 0;
+    viewController = PageController(initialPage: initialPage);
+    currentIndex = initialPage.obs;
+    super.onInit();
+  }
 
   void changeView(int index) {
     currentIndex.value = index;
@@ -17,13 +26,5 @@ class HomeController extends GetxController {
       );
       Storage.instance.setInt(StorageKeys.homeViewIndex.name, index);
     }
-  }
-
-  @override
-  void onInit() {
-    final savedIndex = Storage.instance.getInt(StorageKeys.homeViewIndex.name);
-    currentIndex.value = savedIndex ?? 0;
-    viewController.jumpToPage(savedIndex ?? 0);
-    super.onInit();
   }
 }

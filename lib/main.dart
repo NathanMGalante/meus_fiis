@@ -8,6 +8,7 @@ import 'package:meus_fiis/shared/routes.dart';
 import 'package:meus_fiis/shared/storage.dart';
 
 Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   await Storage.initialize();
 
   runApp(const MyApp());
