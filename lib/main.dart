@@ -5,8 +5,11 @@ import 'package:meus_fiis/modules/home/page.dart';
 import 'package:meus_fiis/shared/in18.dart';
 import 'package:meus_fiis/shared/locales.dart';
 import 'package:meus_fiis/shared/routes.dart';
+import 'package:meus_fiis/shared/storage.dart';
 
-void main() {
+Future<void> main() async {
+  await Storage.initialize();
+
   runApp(const MyApp());
 }
 
