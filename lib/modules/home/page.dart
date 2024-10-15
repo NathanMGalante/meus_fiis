@@ -15,6 +15,7 @@ class HomePage extends GetView<HomeController> {
     return Scaffold(
       body: SafeArea(
         child: ExpandablePageView(
+          onPageChanged: controller.changeView,
           controller: controller.viewController,
           children: const [
             DashboardView(),

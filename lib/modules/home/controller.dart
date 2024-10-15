@@ -7,10 +7,12 @@ class HomeController extends GetxController {
 
   void changeView(int index) {
     currentIndex.value = index;
-    viewController.animateToPage(
-      index,
-      duration: const Duration(milliseconds: 100),
-      curve: Curves.easeInOutCubic,
-    );
+    if (index != currentIndex.value) {
+      viewController.animateToPage(
+        index,
+        duration: const Duration(milliseconds: 100),
+        curve: Curves.easeInOutCubic,
+      );
+    }
   }
 }
