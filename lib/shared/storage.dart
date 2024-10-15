@@ -1,6 +1,9 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
-enum StorageKeys { homeViewIndex }
+enum StorageKeys {
+  homeView,
+  wallet,
+}
 
 class Storage {
   static late SharedPreferences instance;
