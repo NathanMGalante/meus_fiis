@@ -27,6 +27,8 @@ class MyApp extends StatelessWidget {
       title: 'Meus FIIs',
       theme: ThemeData(
         colorScheme: _colorScheme,
+        splashColor: _colorScheme.secondary.withOpacity(0.10),
+        highlightColor: _colorScheme.secondary.withOpacity(0.10),
         useMaterial3: true,
         appBarTheme: AppBarTheme(
           color: _colorScheme.inversePrimary,

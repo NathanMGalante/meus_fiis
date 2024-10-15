@@ -14,19 +14,19 @@ class HomePage extends GetView<HomeController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: ExpandablePageView(
-          onPageChanged: controller.changeView,
-          controller: controller.viewController,
-          children: const [
-            DashboardView(),
-            FiiView(),
-            OperationsView(),
-          ],
-        ),
+      body: ExpandablePageView(
+        onPageChanged: controller.changeView,
+        controller: controller.viewController,
+        physics: const NeverScrollableScrollPhysics(),
+        children: const [
+          DashboardView(),
+          FiiView(),
+          OperationsView(),
+        ],
       ),
       bottomNavigationBar: Obx(
         () => NavigationBar(
+          height: 80.0,
           onDestinationSelected: controller.changeView,
           selectedIndex: controller.currentIndex.value,
           destinations: [

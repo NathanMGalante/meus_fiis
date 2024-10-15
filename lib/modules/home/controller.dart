@@ -10,13 +10,12 @@ import 'package:meus_fiis/shared/storage.dart';
 class HomeController extends GetxController {
   late final PageController viewController;
   late final RxInt currentIndex;
-  final RxList<Fii> wallet = <Fii>[].obs;
+  final RxList<Fii> wallet = <Fii>[Fii('BIME11'), Fii('RBRF11')].obs;
 
   @override
   void onInit() {
     _loadInitialView();
     _loadWallet();
-    search('bime');
     super.onInit();
   }
 
