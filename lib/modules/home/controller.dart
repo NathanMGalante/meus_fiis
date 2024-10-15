@@ -17,7 +17,6 @@ class HomeController extends GetxController {
   }
 
   void changeView(int index) {
-    currentIndex.value = index;
     if (index != currentIndex.value) {
       viewController.animateToPage(
         index,
@@ -26,5 +25,6 @@ class HomeController extends GetxController {
       );
       Storage.instance.setInt(StorageKeys.homeViewIndex.name, index);
     }
+    currentIndex.value = index;
   }
 }
