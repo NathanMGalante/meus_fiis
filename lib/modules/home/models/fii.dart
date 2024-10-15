@@ -6,6 +6,8 @@ class Fii {
   late final String tag;
   late final List<Operation> operations;
 
+  Fii(this.tag) : operations = <Operation>[];
+
   Fii.fromJson(String json) {
     final Map<String, dynamic> map = jsonDecode(json);
     tag = map['tag'];
