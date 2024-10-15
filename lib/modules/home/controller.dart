@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:meus_fiis/shared/n_utils/utils/durations.dart';
 
 class HomeController extends GetxController {
   final PageController viewController = PageController(initialPage: 0);
@@ -10,7 +11,7 @@ class HomeController extends GetxController {
     if (index != currentIndex.value) {
       viewController.animateToPage(
         index,
-        duration: const Duration(milliseconds: 100),
+        duration: Durations.n100Millis,
         curve: Curves.easeInOutCubic,
       );
     }
