@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:meus_fiis/modules/home/controller.dart';
-import 'package:meus_fiis/modules/home/views/operations/widgets/operation_button.dart';
+import 'package:meus_fiis/modules/home/views/operation/widgets/operation_button.dart';
 import 'package:meus_fiis/shared/n_utils/utils/n_spacing.dart';
 
 class OperationsView extends GetView<HomeController> {

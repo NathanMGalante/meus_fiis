@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:meus_fiis/modules/home/binding.dart';
 import 'package:meus_fiis/modules/home/page.dart';
+import 'package:meus_fiis/modules/home/views/operation/binding.dart';
 import 'package:meus_fiis/shared/in18.dart';
 import 'package:meus_fiis/shared/locales.dart';
 import 'package:meus_fiis/shared/routes.dart';
@@ -44,6 +45,7 @@ class MyApp extends StatelessWidget {
           name: Routes.home.route,
           page: () => const HomePage(),
           binding: HomeBinding(),
+          bindings: [OperationBinding()],
         ),
       ],
     );

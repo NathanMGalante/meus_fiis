@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:meus_fiis/modules/home/controller.dart';
 import 'package:meus_fiis/modules/home/views/dashboard/view.dart';
-import 'package:meus_fiis/modules/home/views/operations/view.dart';
+import 'package:meus_fiis/modules/home/views/operation/view.dart';
 import 'package:meus_fiis/modules/home/views/wallet/view.dart';
 import 'package:meus_fiis/shared/in18.dart';
 
