@@ -6,8 +6,8 @@ import 'package:meus_fiis/shared/n_utils/utils/n_radius.dart';
 import 'package:meus_fiis/shared/n_utils/utils/n_spacing.dart';
 import 'package:meus_fiis/shared/n_widgets/n_button.dart';
 
-class NewFiiButton extends StatelessWidget {
-  const NewFiiButton({super.key});
+class OperationButton extends StatelessWidget {
+  const OperationButton({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +21,7 @@ class NewFiiButton extends StatelessWidget {
       child: Row(
         children: [
           Icon(MdiIcons.plus),
-          Text(In18.fiiViewAddText.name.tr),
+          Text(In18.operationButtonText.name.tr),
         ],
       ),
     );

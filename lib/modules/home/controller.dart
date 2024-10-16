@@ -2,7 +2,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
-import 'package:meus_fiis/modules/home/models/fii.dart';
+import 'package:meus_fiis/modules/home/models/operation.dart';
+import 'package:meus_fiis/modules/home/models/operation_type.dart';
 import 'package:meus_fiis/shared/custom_dio.dart';
 import 'package:meus_fiis/shared/n_utils/utils/n_durations.dart';
 import 'package:meus_fiis/shared/storage.dart';
@@ -10,7 +11,29 @@ import 'package:meus_fiis/shared/storage.dart';
 class HomeController extends GetxController {
   late final PageController viewController;
   late final RxInt currentIndex;
-  final RxList<Fii> wallet = <Fii>[Fii('BIME11'), Fii('RBRF11')].obs;
+  final RxList<Operation> _operations = <Operation>[
+    Operation(
+      tag: 'BIME11',
+      operationType: OperationType.buy,
+      operationDateTime: DateTime.now(),
+      quantity: 452,
+      price: 7.26,
+    ),
+  ].obs;
+
+  RxList<Operation> get operations => _operations;
+
+  RxMap<String, List<Operation>> get wallet {
+    RxMap<String, List<Operation>> map = <String, List<Operation>>{}.obs;
+    for (var operation in _operations) {
+      if (map[operation.tag] == null) {
+        map[operation.tag] = [operation];
+      } else {
+        map[operation.tag]!.add(operation);
+      }
+    }
+    return map;
+  }
 
   @override
   void onInit() {
@@ -27,9 +50,14 @@ class HomeController extends GetxController {
   }
 
   void _loadWallet() {
-    final savedWallet = Storage.instance.getStringList(StorageKeys.wallet.name);
-    if (savedWallet != null && savedWallet.isNotEmpty) {
-      wallet.addAll(savedWallet.map((json) => Fii.fromJson(json)).toList());
+    final savedOperations = Storage.instance.getStringList(
+      StorageKeys.operations.name,
+    );
+    if (savedOperations != null && savedOperations.isNotEmpty) {
+      _operations.clear();
+      _operations.addAll(
+        savedOperations.map((json) => Operation.fromJson(json)).toList(),
+      );
     }
   }
 

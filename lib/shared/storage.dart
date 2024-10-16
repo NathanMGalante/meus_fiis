@@ -2,7 +2,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 enum StorageKeys {
   homeView,
-  wallet,
+  operations,
 }
 
 class Storage {

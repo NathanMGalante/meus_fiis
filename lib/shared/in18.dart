@@ -5,7 +5,7 @@ enum In18 {
   navBarDashboardLabel,
   navBarFiiLabel,
   navBarOperationsLabel,
-  fiiViewAddText,
+  operationButtonText,
 }
 
 class In18Messages extends Translations {
@@ -15,7 +15,7 @@ class In18Messages extends Translations {
       In18.navBarDashboardLabel.name: 'Visão geral',
       In18.navBarFiiLabel.name: 'Ativos',
       In18.navBarOperationsLabel.name: 'Operações',
-      In18.fiiViewAddText.name: 'Novo ativo',
+      In18.operationButtonText.name: 'Nova operação',
     },
   };
 }

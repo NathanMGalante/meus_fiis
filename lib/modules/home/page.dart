@@ -4,8 +4,8 @@ import 'package:get/get.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:meus_fiis/modules/home/controller.dart';
 import 'package:meus_fiis/modules/home/views/dashboard/view.dart';
-import 'package:meus_fiis/modules/home/views/fii/view.dart';
 import 'package:meus_fiis/modules/home/views/operations/view.dart';
+import 'package:meus_fiis/modules/home/views/wallet/view.dart';
 import 'package:meus_fiis/shared/in18.dart';
 
 class HomePage extends GetView<HomeController> {
@@ -20,7 +20,7 @@ class HomePage extends GetView<HomeController> {
         physics: const NeverScrollableScrollPhysics(),
         children: const [
           DashboardView(),
-          FiiView(),
+          WalletView(),
           OperationsView(),
         ],
       ),
