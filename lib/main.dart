@@ -27,6 +27,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return NConfig(
       dropdownHintText: In18.sharedSelectionHintText.name.tr,
+      searchHintText: In18.sharedSearchHintText.name.tr,
       child: GetMaterialApp(
         title: 'Meus FIIs',
         theme: ThemeData(

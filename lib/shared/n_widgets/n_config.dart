@@ -4,10 +4,12 @@ class NConfig extends InheritedWidget {
   const NConfig({
     super.key,
     this.dropdownHintText,
+    this.searchHintText,
     required super.child,
   });
 
   final String? dropdownHintText;
+  final String? searchHintText;
 
   static NConfig of(BuildContext context) {
     final NConfig? result =
