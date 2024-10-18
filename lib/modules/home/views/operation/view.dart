@@ -3,6 +3,8 @@ import 'package:get/get.dart';
 import 'package:meus_fiis/modules/home/controller.dart';
 import 'package:meus_fiis/modules/home/views/operation/widgets/operation_button.dart';
 import 'package:meus_fiis/shared/n_utils/utils/n_spacing.dart';
+import 'package:meus_fiis/shared/n_widgets/n_dropdown.dart';
+import 'package:meus_fiis/shared/n_widgets/n_dropdown.dart';
 
 class OperationsView extends GetView<HomeController> {
   const OperationsView({super.key});
@@ -32,6 +34,9 @@ class OperationsView extends GetView<HomeController> {
               ),
             ),
           ),
+        ),
+        NDropdown<num>(
+          items: [1, 2, 3],
         ),
         for (final operation in controller.operations)
           Padding(
