@@ -7,6 +7,7 @@ import 'package:meus_fiis/shared/n_utils/utils/n_radius.dart';
 import 'package:meus_fiis/shared/n_utils/utils/n_sizing.dart';
 import 'package:meus_fiis/shared/n_utils/utils/n_spacing.dart';
 import 'package:meus_fiis/shared/n_widgets/n_button.dart';
+import 'package:meus_fiis/shared/n_widgets/n_dropdown.dart';
 
 class OperationDialog extends StatefulWidget {
   const OperationDialog({super.key});
@@ -27,25 +28,28 @@ class _OperationDialogState extends State<OperationDialog> {
   @override
   Widget build(BuildContext context) {
     return AspectRatio(
-      aspectRatio: 2,
+      aspectRatio: 1,
       child: Material(
         child: Padding(
           padding: const EdgeInsets.all(NSpacing.n8),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Container(
-                color: Colors.grey,
-                height: NSpacing.n32,
+              NDropdown<String>(
+                items: const ['RBRF11', "BIME11", "RZAK11", "BARI11", "AIEC11"],
+                enableSearch: true,
+                required: true,
               ),
               Padding(
                 padding: const EdgeInsets.only(top: NSpacing.n8),
                 child: Row(
                   children: [
                     Expanded(
-                      child: Container(
-                        color: Colors.grey,
-                        height: NSpacing.n32,
+                      child: NDropdown<OperationType>(
+                        items: OperationType.values,
+                        selectedItem: OperationType.buy,
+                        itemText: (item) => item.text,
+                        required: true,
                       ),
                     ),
                     const SizedBox(width: NSpacing.n8),

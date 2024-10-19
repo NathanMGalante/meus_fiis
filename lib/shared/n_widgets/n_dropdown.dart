@@ -8,6 +8,7 @@ import 'package:meus_fiis/shared/n_widgets/n_button.dart';
 import 'package:meus_fiis/shared/n_widgets/n_child_builder.dart';
 import 'package:meus_fiis/shared/n_widgets/n_config.dart';
 import 'package:meus_fiis/shared/n_widgets/n_scroll_view.dart';
+import 'package:meus_fiis/shared/n_widgets/n_text_field.dart';
 
 class NDropdown<ItemType> extends StatelessWidget {
   NDropdown({
@@ -117,7 +118,7 @@ class NDropdown<ItemType> extends StatelessWidget {
                                         ),
                                       );
                                     } catch (ex) {
-                                      return Text('');
+                                      return const SizedBox.shrink();
                                     }
                                   },
                                 ),
@@ -138,61 +139,49 @@ class NDropdown<ItemType> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
+    return NTextField(
       readOnly: true,
       controller: _valueController,
-      decoration: InputDecoration(
-        contentPadding: const EdgeInsets.only(
-          left: NSpacing.n16,
-          right: NSpacing.n16,
-          bottom: NSpacing.n16,
-        ),
-        constraints: BoxConstraints.tight(const Size.fromHeight(NSizing.n40)),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(NRadius.n4),
-        ),
-        hintStyle: Theme.of(context).textTheme.bodySmall,
-        suffix: Stack(
-          children: [
-            Padding(
-              padding:
-                  const EdgeInsets.only(top: NSpacing.n16, left: NSpacing.n4),
-              child: NChildBuilder(
-                builder: (context, child) {
-                  if (required) {
-                    return child;
-                  }
-                  return Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      child,
-                      Padding(
-                        padding: const EdgeInsets.only(left: NSpacing.n8),
-                        child: NButton(
-                          radius: NRadius.n4,
-                          onTap: () {
-                            _valueController.text = '';
-                            onSelected?.call(null);
-                          },
-                          child: const Icon(
-                            Icons.clear,
-                            size: NSizing.n16,
-                          ),
+      onTap: () => _showSelection(context),
+      suffix: Stack(
+        children: [
+          Padding(
+            padding:
+                const EdgeInsets.only(top: NSpacing.n16, left: NSpacing.n4),
+            child: NChildBuilder(
+              builder: (context, child) {
+                if (required) {
+                  return child;
+                }
+                return Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    child,
+                    Padding(
+                      padding: const EdgeInsets.only(left: NSpacing.n8),
+                      child: NButton(
+                        radius: NRadius.n4,
+                        onTap: () {
+                          _valueController.text = '';
+                          onSelected?.call(null);
+                        },
+                        child: const Icon(
+                          Icons.clear,
+                          size: NSizing.n16,
                         ),
                       ),
-                    ],
-                  );
-                },
-                child: const Icon(
-                  Icons.arrow_drop_down,
-                  size: NSizing.n16,
-                ),
+                    ),
+                  ],
+                );
+              },
+              child: const Icon(
+                Icons.arrow_drop_down,
+                size: NSizing.n16,
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
-      onTap: () => _showSelection(context),
     );
   }
 }
