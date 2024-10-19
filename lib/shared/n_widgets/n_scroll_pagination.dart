@@ -1,7 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:meus_fiis/shared/n_widgets/n_child_builder.dart';
+import 'package:meus_fiis/shared/n_utils/utils/n_radius.dart';
+import 'package:meus_fiis/shared/n_utils/utils/n_sizing.dart';
+import 'package:meus_fiis/shared/n_utils/utils/n_spacing.dart';
+import 'package:meus_fiis/shared/n_widgets/n_button.dart';
 import 'package:meus_fiis/shared/n_widgets/n_scroll_fade.dart';
 
 class NScrollPagination<ItemType> extends StatefulWidget {
@@ -30,7 +33,7 @@ class _NScrollPaginationState<ItemType>
   void _listener() {
     if (!widget.controller.lastPage &&
         _scrollController.offset +
-            _scrollController.position.viewportDimension >=
+                _scrollController.position.viewportDimension >=
             _scrollController.position.maxScrollExtent) {
       widget.controller._request();
     }
@@ -62,56 +65,84 @@ class _NScrollPaginationState<ItemType>
     return ListenableBuilder(
       listenable: widget.controller,
       builder: (context, _) {
-        return FutureBuilder<List<ItemType>>(
+        return FutureBuilder<void>(
           future: widget.controller._loadItems(widget.items),
           builder: (context, snapshot) {
-            return NChildBuilder(
-              builder: (context, child) {
-                if (widget.controller.isFirstPage) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                  if (snapshot.hasError) {
-                    return Text(snapshot.error.toString());
-                  }
-                  if ((snapshot.data ?? []).isEmpty) {
-                    return const Center(child: Text('Nenhum item encontrado'));
-                  }
-                  return child;
-                }
-                return child;
-
-                // return Column(
-                //   mainAxisSize: MainAxisSize.min,
-                //   children: [
-                //     Expanded(child: child),
-                //     Builder(
-                //       builder: (context) {
-                //         if (snapshot.connectionState ==
-                //             ConnectionState.waiting) {
-                //           return const Center(
-                //             child: CircularProgressIndicator(),
-                //           );
-                //         }
-                //         if (snapshot.hasError) {
-                //           return Text(snapshot.error.toString());
-                //         }
-                //         return child;
-                //       },
-                //     ),
-                //   ],
-                // );
-              },
-              child: NScrollFade(
+            if (widget.controller.isFirstPage) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2.0,
+                  ),
+                );
+              }
+              if (snapshot.hasError) {
+                return Center(
+                  child: NButton(
+                    onTap: widget.controller._request,
+                    radius: NRadius.n8,
+                    color: Theme.of(context).highlightColor,
+                    padding: const EdgeInsets.all(8.0),
+                    child: const Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text('Tentar novamente'),
+                        Icon(Icons.refresh),
+                      ],
+                    ),
+                  ),
+                );
+              }
+              if (widget.controller._parsedItems.isEmpty) {
+                return NButton(
+                  onTap: widget.controller._request,
+                  child: const Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text('Tentar novamente'),
+                      Icon(Icons.refresh),
+                    ],
+                  ),
+                );
+              }
+            }
+            return NScrollFade(
+              controller: _scrollController,
+              child: ListView(
                 controller: _scrollController,
-                child: ListView(
-                  controller: _scrollController,
-                  shrinkWrap: true,
-                  children: [
-                    for (ItemType item in snapshot.data ?? [])
-                      widget.itemBuilder(context, item),
-                  ],
-                ),
+                shrinkWrap: true,
+                children: [
+                  for (ItemType item in widget.controller._parsedItems)
+                    widget.itemBuilder(context, item),
+                  if (!widget.controller.isFirstPage &&
+                      snapshot.connectionState == ConnectionState.waiting)
+                    const Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(NSpacing.n4),
+                        child: SizedBox.square(
+                          dimension: NSizing.n16,
+                          child: CircularProgressIndicator(strokeWidth: 2.0),
+                        ),
+                      ),
+                    ),
+                  if (!widget.controller.isFirstPage && snapshot.hasError)
+                    NButton(
+                      onTap: widget.controller._request,
+                      child: const Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(right: NSpacing.n4),
+                            child: Icon(Icons.refresh),
+                          ),
+                          Text('Tentar novamente'),
+                        ],
+                      ),
+                    ),
+                ],
               ),
             );
           },
@@ -134,26 +165,27 @@ class NScrollPaginationController<ItemType> extends ChangeNotifier {
 
   bool get isFirstPage => page == 0;
 
-  Future<List<ItemType>> _loadItems(FutureOr<List<ItemType>> items) async {
-    if (allItems.isEmpty) {
-      allItems.addAll(await items);
-    }
-    int firstIndex = page * pageSize;
-    if (lastPage || firstIndex >= allItems.length) {
-      return currentItems;
-    }
-
-    int lastIndex = firstIndex + pageSize;
-    if (lastIndex > allItems.length) {
-      lastIndex = allItems.length;
-      lastPage = true;
-    }
-    page++;
-    currentItems.addAll(allItems.sublist(firstIndex, lastIndex));
+  List<ItemType> get _parsedItems {
     if (_widgetState?.widget.itemVisibility != null) {
       return currentItems.where(_widgetState!.widget.itemVisibility!).toList();
     }
     return currentItems;
+  }
+
+  Future<void> _loadItems(FutureOr<List<ItemType>> items) async {
+    if (allItems.isEmpty) {
+      allItems.addAll(await items);
+    }
+    int firstIndex = page * pageSize;
+    if (!lastPage && firstIndex < allItems.length) {
+      int lastIndex = firstIndex + pageSize;
+      if (lastIndex > allItems.length) {
+        lastIndex = allItems.length;
+        lastPage = true;
+      }
+      page++;
+      currentItems.addAll(allItems.sublist(firstIndex, lastIndex));
+    }
   }
 
   void refresh() {
