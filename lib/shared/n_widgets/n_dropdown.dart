@@ -7,7 +7,7 @@ import 'package:meus_fiis/shared/n_utils/utils/n_string.dart';
 import 'package:meus_fiis/shared/n_widgets/n_button.dart';
 import 'package:meus_fiis/shared/n_widgets/n_child_builder.dart';
 import 'package:meus_fiis/shared/n_widgets/n_config.dart';
-import 'package:meus_fiis/shared/n_widgets/n_scroll_view.dart';
+import 'package:meus_fiis/shared/n_widgets/n_scroll_pagination.dart';
 import 'package:meus_fiis/shared/n_widgets/n_text_field.dart';
 
 class NDropdown<ItemType> extends StatelessWidget {
@@ -42,95 +42,87 @@ class NDropdown<ItemType> extends StatelessWidget {
 
   String _getItemText(ItemType item) => itemText?.call(item) ?? item.toString();
 
-  void _showSelection(BuildContext context) {
+  Future<void> _showSelection(BuildContext context) async {
     final searchController = TextEditingController();
-    showDialog(
+    final NScrollPaginationController<ItemType> scrollPaginationController =
+        NScrollPaginationController();
+    await showDialog(
       context: context,
       builder: (context) {
         return Dialog(
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(NRadius.n4)),
           ),
-          child: StatefulBuilder(
-            builder: (context, setState) {
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  if (enableSearch)
-                    TextField(
-                      autofocus: true,
-                      controller: searchController,
-                      decoration: InputDecoration(
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: NSpacing.n16,
-                        ),
-                        hintText: NConfig.of(context).searchHintText,
-                        hintStyle: Theme.of(context).textTheme.bodySmall,
-                      ),
-                      onChanged: (_) => setState(() {}),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              if (enableSearch)
+                TextField(
+                  autofocus: true,
+                  controller: searchController,
+                  decoration: InputDecoration(
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: NSpacing.n16,
                     ),
-                  Expanded(
-                    child: NScrollView(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          for (var item in items.where(
-                            (item) {
-                              final text = _getItemText(item);
-                              final search = searchController.value.text;
-                              return text.nNormalize.toUpperCase().contains(
-                                    search.nNormalize.toUpperCase(),
-                                  );
-                            },
-                          ))
-                            NButton(
-                              onTap: () {
-                                _valueController.text = _getItemText(item);
-                                onSelected?.call(item);
-                                Navigator.pop(context);
-                              },
-                              child: Padding(
-                                padding: const EdgeInsets.all(NSpacing.n8),
-                                child: Builder(
-                                  builder: (context) {
-                                    try {
-                                      final splitText =
-                                          _getItemText(item).nSplitFirstWord(
-                                        searchController.value.text,
-                                      );
-                                      return Text.rich(
-                                        TextSpan(
-                                          children: [
-                                            WidgetSpan(
-                                              child: Text(splitText.first),
-                                            ),
-                                            WidgetSpan(
-                                              child: Container(
-                                                color: Theme.of(context)
-                                                    .highlightColor,
-                                                child: Text(splitText.second),
-                                              ),
-                                            ),
-                                            WidgetSpan(
-                                              child: Text(splitText.last),
-                                            ),
-                                          ],
-                                        ),
-                                      );
-                                    } catch (ex) {
-                                      return const SizedBox.shrink();
-                                    }
-                                  },
+                    hintText: NConfig.of(context).searchHintText,
+                    hintStyle: Theme.of(context).textTheme.bodySmall,
+                  ),
+                  onChanged: (_) => scrollPaginationController.refresh(),
+                ),
+              Expanded(
+                child: NScrollPagination<ItemType>(
+                  controller: scrollPaginationController,
+                  items: items,
+                  itemVisibility: (item) {
+                    return _getItemText(item).nNormalize.toUpperCase().contains(
+                          searchController.value.text.nNormalize.toUpperCase(),
+                        );
+                  },
+                  itemBuilder: (context, item) {
+                    return NButton(
+                      onTap: () {
+                        _valueController.text = _getItemText(item);
+                        onSelected?.call(item);
+                        Navigator.pop(context);
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(NSpacing.n8),
+                        child: Builder(
+                          builder: (context) {
+                            try {
+                              final splitText =
+                                  _getItemText(item).nSplitFirstWord(
+                                searchController.value.text,
+                              );
+                              return Text.rich(
+                                TextSpan(
+                                  children: [
+                                    WidgetSpan(
+                                      child: Text(splitText.first),
+                                    ),
+                                    WidgetSpan(
+                                      child: Container(
+                                        color: Theme.of(context).highlightColor,
+                                        child: Text(splitText.second),
+                                      ),
+                                    ),
+                                    WidgetSpan(
+                                      child: Text(splitText.last),
+                                    ),
+                                  ],
                                 ),
-                              ),
-                            ),
-                        ],
+                              );
+                            } catch (ex) {
+                              return const SizedBox.shrink();
+                            }
+                          },
+                        ),
                       ),
-                    ),
-                  )
-                ],
-              );
-            },
+                    );
+                  },
+                ),
+              )
+            ],
           ),
         );
       },

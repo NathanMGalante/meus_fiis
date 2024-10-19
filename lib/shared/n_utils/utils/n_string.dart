@@ -1,17 +1,13 @@
 extension StringExtension on String {
   List<String> nSplitFirstWord(String word, [bool caseSensitive = false]) {
-    String original = this;
-    String normalized = nNormalize.toUpperCase();
-    String wordNormalized = word.nNormalize.toUpperCase();
-
     int index = caseSensitive
-        ? original.indexOf(word)
-        : normalized.indexOf(wordNormalized);
+        ? indexOf(word)
+        : nNormalize.toUpperCase().indexOf(word.nNormalize.toUpperCase());
     if (index != -1) {
       return [
-        original.substring(0, index),
-        original.substring(index, index + word.length),
-        original.substring(index + word.length),
+        substring(0, index),
+        substring(index, index + word.length),
+        substring(index + word.length),
       ];
     }
     throw 'Not found';
