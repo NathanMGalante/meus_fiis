@@ -1,6 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:meus_fiis/shared/in18.dart';
+import 'package:meus_fiis/shared/n_utils/utils/n_debounce.dart';
 import 'package:meus_fiis/shared/n_utils/utils/n_radius.dart';
 import 'package:meus_fiis/shared/n_utils/utils/n_sizing.dart';
 import 'package:meus_fiis/shared/n_utils/utils/n_spacing.dart';
@@ -18,7 +21,7 @@ class NScrollPagination<ItemType> extends StatefulWidget {
 
   final NScrollPaginationController<ItemType> controller;
   final Widget Function(BuildContext, ItemType) itemBuilder;
-  final FutureOr<List<ItemType>> items;
+  final Future<List<ItemType>> Function(int page, int pageSize) items;
   final bool Function(ItemType)? itemVisibility;
 
   @override
@@ -31,7 +34,7 @@ class _NScrollPaginationState<ItemType>
   late ScrollController _scrollController;
 
   void _listener() {
-    if (!widget.controller.lastPage &&
+    if (widget.controller._canLoad &&
         _scrollController.offset +
                 _scrollController.position.viewportDimension >=
             _scrollController.position.maxScrollExtent) {
@@ -83,12 +86,12 @@ class _NScrollPaginationState<ItemType>
                     radius: NRadius.n8,
                     color: Theme.of(context).highlightColor,
                     padding: const EdgeInsets.all(8.0),
-                    child: const Column(
+                    child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text('Tentar novamente'),
-                        Icon(Icons.refresh),
+                        Text(In18.sharedTryAgainText.name.tr),
+                        const Icon(Icons.refresh),
                       ],
                     ),
                   ),
@@ -97,12 +100,12 @@ class _NScrollPaginationState<ItemType>
               if (widget.controller._parsedItems.isEmpty) {
                 return NButton(
                   onTap: widget.controller._request,
-                  child: const Column(
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text('Tentar novamente'),
-                      Icon(Icons.refresh),
+                      Text(In18.sharedTryAgainText.name.tr),
+                      const Icon(Icons.refresh),
                     ],
                   ),
                 );
@@ -153,39 +156,37 @@ class _NScrollPaginationState<ItemType>
 }
 
 class NScrollPaginationController<ItemType> extends ChangeNotifier {
-  NScrollPaginationController({this.pageSize = 10});
+  NScrollPaginationController({this.totalPages, this.pageSize = 10});
 
   _NScrollPaginationState<ItemType>? _widgetState;
 
+  int? totalPages;
   int pageSize;
-  final List<ItemType> allItems = [];
-  final List<ItemType> currentItems = [];
+  bool _canLoad = true;
+
+  final List<ItemType> itemList = [];
   int page = 0;
-  bool lastPage = false;
 
   bool get isFirstPage => page == 0;
 
   List<ItemType> get _parsedItems {
     if (_widgetState?.widget.itemVisibility != null) {
-      return currentItems.where(_widgetState!.widget.itemVisibility!).toList();
+      return itemList.where(_widgetState!.widget.itemVisibility!).toList();
     }
-    return currentItems;
+    return itemList;
   }
 
-  Future<void> _loadItems(FutureOr<List<ItemType>> items) async {
-    if (allItems.isEmpty) {
-      allItems.addAll(await items);
-    }
-    int firstIndex = page * pageSize;
-    if (!lastPage && firstIndex < allItems.length) {
-      int lastIndex = firstIndex + pageSize;
-      if (lastIndex > allItems.length) {
-        lastIndex = allItems.length;
-        lastPage = true;
+  Future<void> _loadItems(
+    Future<List<ItemType>> Function(int page, int pageSize) items,
+  ) async {
+    await NDebounce.run('n_scroll_pagination_$hashCode', () async {
+      final newItems = await items(page, pageSize);
+      _canLoad = totalPages != null ? page <= totalPages! : newItems.isNotEmpty;
+      if (_canLoad) {
+        itemList.addAll(newItems);
+        page++;
       }
-      page++;
-      currentItems.addAll(allItems.sublist(firstIndex, lastIndex));
-    }
+    });
   }
 
   void refresh() {
@@ -194,10 +195,9 @@ class NScrollPaginationController<ItemType> extends ChangeNotifier {
   }
 
   void reset() {
-    allItems.clear();
-    currentItems.clear();
+    itemList.clear();
     page = 0;
-    lastPage = false;
+    _canLoad = true;
   }
 
   @override

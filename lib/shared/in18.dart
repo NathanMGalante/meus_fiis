@@ -8,6 +8,8 @@ enum In18 {
   operationButtonText,
   sharedSelectionHintText,
   sharedSearchHintText,
+  sharedTryAgainText,
+  sharedNoDataText,
   operationTypeBuyText,
   operationTypeSellText,
 }
@@ -22,6 +24,8 @@ class In18Messages extends Translations {
       In18.operationButtonText.name: 'Nova operação',
       In18.sharedSelectionHintText.name: 'Selecione',
       In18.sharedSearchHintText.name: 'Pesquisar',
+      In18.sharedTryAgainText.name: 'Tentar novamente',
+      In18.sharedNoDataText.name: 'Nenhum item encontrado',
       In18.operationTypeBuyText.name: 'Compra',
       In18.operationTypeSellText.name: 'Venda',
     },

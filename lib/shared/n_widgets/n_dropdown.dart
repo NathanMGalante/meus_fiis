@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:meus_fiis/shared/n_utils/utils/n_future.dart';
 import 'package:meus_fiis/shared/n_utils/utils/n_list.dart';
 import 'package:meus_fiis/shared/n_utils/utils/n_radius.dart';
 import 'package:meus_fiis/shared/n_utils/utils/n_sizing.dart';
@@ -13,7 +16,8 @@ import 'package:meus_fiis/shared/n_widgets/n_text_field.dart';
 class NDropdown<ItemType> extends StatelessWidget {
   NDropdown({
     super.key,
-    required this.items,
+    this.items = const [],
+    this.searchItems,
     this.selectedItem,
     this.onSelected,
     this.itemText,
@@ -22,13 +26,17 @@ class NDropdown<ItemType> extends StatelessWidget {
     this.label,
     this.enableSearch = false,
     this.required = false,
+    this.errorText,
+    this.noDataText,
   })  : assert(itemText != null || items is List<String> || items is List<num>),
         _valueController = TextEditingController(
             text: selectedItem == null
                 ? null
                 : itemText?.call(selectedItem) ?? selectedItem.toString());
 
-  final List<ItemType> items;
+  final FutureOr<List<ItemType>> items;
+  final Future<List<ItemType>> Function(int page, int pageSize, String search)?
+      searchItems;
   final ItemType? selectedItem;
   final String Function(ItemType)? itemText;
   final ValueChanged<ItemType?>? onSelected;
@@ -37,6 +45,8 @@ class NDropdown<ItemType> extends StatelessWidget {
   final String? label;
   final bool enableSearch;
   final bool required;
+  final String? errorText;
+  final String? noDataText;
 
   final TextEditingController _valueController;
 
@@ -70,58 +80,86 @@ class NDropdown<ItemType> extends StatelessWidget {
                   onChanged: (_) => scrollPaginationController.refresh(),
                 ),
               Expanded(
-                child: NScrollPagination<ItemType>(
-                  controller: scrollPaginationController,
-                  items: items,
-                  itemVisibility: (item) {
-                    return _getItemText(item).nNormalize.toUpperCase().contains(
-                          searchController.value.text.nNormalize.toUpperCase(),
-                        );
-                  },
-                  itemBuilder: (context, item) {
-                    return NButton(
-                      onTap: () {
-                        _valueController.text = _getItemText(item);
-                        onSelected?.call(item);
-                        Navigator.pop(context);
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.all(NSpacing.n8),
-                        child: Builder(
-                          builder: (context) {
-                            try {
-                              final splitText =
-                                  _getItemText(item).nSplitFirstWord(
-                                searchController.value.text,
-                              );
-                              return Text.rich(
-                                TextSpan(
-                                  children: [
-                                    WidgetSpan(
-                                      child: Text(splitText.first),
-                                    ),
-                                    WidgetSpan(
-                                      child: Container(
-                                        color: Theme.of(context).highlightColor,
-                                        child: Text(splitText.second),
-                                      ),
-                                    ),
-                                    WidgetSpan(
-                                      child: Text(splitText.last),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            } catch (ex) {
-                              return const SizedBox.shrink();
-                            }
-                          },
+                child: Builder(
+                  builder: (context) {
+                    if (searchItems != null) {
+                      return NScrollPagination<ItemType>(
+                        controller: scrollPaginationController,
+                        items: (page, pageSize) => searchItems!(
+                          page,
+                          pageSize,
+                          searchController.value.text,
                         ),
-                      ),
+                        itemVisibility: (item) {
+                          return _getItemText(item)
+                              .nNormalize
+                              .toUpperCase()
+                              .contains(
+                                searchController.value.text.nNormalize
+                                    .toUpperCase(),
+                              );
+                        },
+                        itemBuilder: (context, item) {
+                          return NButton(
+                            onTap: () {
+                              _valueController.text = _getItemText(item);
+                              onSelected?.call(item);
+                              Navigator.pop(context);
+                            },
+                            child: _SearchItem(
+                              itemText: _getItemText(item),
+                              searchText: searchController.value.text,
+                            ),
+                          );
+                        },
+                      );
+                    }
+                    return FutureBuilder<List<ItemType>>(
+                      future: items.future,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Center(
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2.0,
+                            ),
+                          );
+                        }
+                        if (snapshot.hasError) {
+                          return Center(
+                            child: Text(
+                              errorText ?? snapshot.error.toString(),
+                            ),
+                          );
+                        }
+                        if ((snapshot.data ?? []).isEmpty) {
+                          return Center(
+                            child: Text(
+                              noDataText ?? '',
+                            ),
+                          );
+                        }
+                        return ListView(
+                          children: [
+                            for (ItemType item in snapshot.data!)
+                              NButton(
+                                onTap: () {
+                                  _valueController.text = _getItemText(item);
+                                  onSelected?.call(item);
+                                  Navigator.pop(context);
+                                },
+                                child: _SearchItem(
+                                  itemText: _getItemText(item),
+                                  searchText: searchController.value.text,
+                                ),
+                              ),
+                          ],
+                        );
+                      },
                     );
                   },
                 ),
-              )
+              ),
             ],
           ),
         );
@@ -173,6 +211,52 @@ class NDropdown<ItemType> extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _SearchItem extends StatelessWidget {
+  const _SearchItem({
+    required this.itemText,
+    required this.searchText,
+  });
+
+  final String itemText;
+  final String searchText;
+
+  List<String> get _splitText {
+    try {
+      return itemText.nSplitFirstWord(searchText);
+    } catch (ex) {
+      return [];
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_splitText.isEmpty) {
+      return const SizedBox.shrink();
+    }
+    return Padding(
+      padding: const EdgeInsets.all(NSpacing.n8),
+      child: Text.rich(
+        TextSpan(
+          children: [
+            WidgetSpan(
+              child: Text(_splitText.first),
+            ),
+            WidgetSpan(
+              child: Container(
+                color: Theme.of(context).highlightColor,
+                child: Text(_splitText.second),
+              ),
+            ),
+            WidgetSpan(
+              child: Text(_splitText.last),
+            ),
+          ],
+        ),
       ),
     );
   }
