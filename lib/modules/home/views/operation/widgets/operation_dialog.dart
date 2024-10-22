@@ -9,6 +9,7 @@ import 'package:meus_fiis/shared/n_utils/utils/n_spacing.dart';
 import 'package:meus_fiis/shared/n_widgets/n_button.dart';
 import 'package:meus_fiis/shared/n_widgets/n_date_picker.dart';
 import 'package:meus_fiis/shared/n_widgets/n_dropdown.dart';
+import 'package:meus_fiis/shared/n_widgets/n_text_field.dart';
 
 class OperationDialog extends StatefulWidget {
   const OperationDialog({super.key});
@@ -37,6 +38,7 @@ class _OperationDialogState extends State<OperationDialog> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               NDropdown<String>(
+                label: 'Ativo',
                 searchItems: (page, pageSize, searchText) => controller.search(
                   page: page,
                   pageSize: pageSize,
@@ -51,6 +53,7 @@ class _OperationDialogState extends State<OperationDialog> {
                   children: [
                     Expanded(
                       child: NDropdown<OperationType>(
+                        label: 'Operação',
                         items: OperationType.values,
                         selectedItem: OperationType.buy,
                         itemText: (item) => item.text,
@@ -59,26 +62,26 @@ class _OperationDialogState extends State<OperationDialog> {
                     ),
                     const SizedBox(width: NSpacing.n8),
                     Expanded(
-                      child: NDatePicker(),
+                      child: NDatePicker(
+                        label: 'Data',
+                      ),
                     ),
                   ],
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.only(top: NSpacing.n8),
+              const Padding(
+                padding: EdgeInsets.only(top: NSpacing.n8),
                 child: Row(
                   children: [
                     Expanded(
-                      child: Container(
-                        color: Colors.grey,
-                        height: NSpacing.n32,
+                      child: NTextField(
+                        label: 'Quantidade',
                       ),
                     ),
-                    const SizedBox(width: NSpacing.n8),
+                    SizedBox(width: NSpacing.n8),
                     Expanded(
-                      child: Container(
-                        color: Colors.grey,
-                        height: NSpacing.n32,
+                      child: NTextField(
+                        label: 'Valor',
                       ),
                     ),
                   ],

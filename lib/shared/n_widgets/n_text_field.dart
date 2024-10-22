@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:meus_fiis/shared/n_utils/utils/n_radius.dart';
 import 'package:meus_fiis/shared/n_utils/utils/n_sizing.dart';
 import 'package:meus_fiis/shared/n_utils/utils/n_spacing.dart';
+import 'package:meus_fiis/shared/n_widgets/n_floating_label.dart';
 
 class NTextField extends StatelessWidget {
   const NTextField({
@@ -11,6 +12,7 @@ class NTextField extends StatelessWidget {
     this.onTap,
     this.onChanged,
     this.suffix,
+    this.label,
   });
 
   final TextEditingController? controller;
@@ -18,6 +20,7 @@ class NTextField extends StatelessWidget {
   final VoidCallback? onTap;
   final ValueChanged<String>? onChanged;
   final Widget? suffix;
+  final String? label;
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +41,7 @@ class NTextField extends StatelessWidget {
         ),
         hintStyle: Theme.of(context).textTheme.bodySmall,
         suffix: suffix,
+        label: label == null ? null : NFloatingLabel(text: label!),
       ),
     );
   }

@@ -15,6 +15,7 @@ class NDatePicker extends StatelessWidget {
     this.selectedDate,
     this.onChanged,
     this.required = false,
+    this.label,
   })  : min = min ?? DateTime(2020),
         max = max ?? DateTime(2025);
 
@@ -23,6 +24,7 @@ class NDatePicker extends StatelessWidget {
   final DateTime? selectedDate;
   final ValueChanged<DateTime?>? onChanged;
   final bool required;
+  final String? label;
 
   final _valueController = TextEditingController();
 
@@ -45,6 +47,7 @@ class NDatePicker extends StatelessWidget {
     return NTextField(
       readOnly: true,
       controller: _valueController,
+      label: label,
       onTap: () => _showDatePicker(context),
       suffix: Stack(
         children: [

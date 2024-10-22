@@ -171,6 +171,7 @@ class NDropdown<ItemType> extends StatelessWidget {
   Widget build(BuildContext context) {
     return NTextField(
       readOnly: true,
+      label: label,
       controller: _valueController,
       onTap: () => _showSelection(context),
       suffix: Stack(
