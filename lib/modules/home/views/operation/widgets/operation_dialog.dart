@@ -21,9 +21,11 @@ class OperationDialog extends StatefulWidget {
 
 class _OperationDialogState extends State<OperationDialog> {
   OperationController get controller => Get.find<OperationController>();
+  final _quantityController = TextEditingController(text: '0');
+  final _priceController = TextEditingController(text: '0');
 
   String tag = '';
-  OperationType? type;
+  OperationType type = OperationType.buy;
   DateTime? operationTime;
   num quantity = 0;
   num price = 0;
@@ -45,6 +47,8 @@ class _OperationDialogState extends State<OperationDialog> {
                   pageSize: pageSize,
                   searchText: searchText,
                 ),
+                selectedItem: tag,
+                onSelected: (value) => setState(() => tag = value ?? ''),
                 enableSearch: true,
                 required: true,
               ),
@@ -56,15 +60,22 @@ class _OperationDialogState extends State<OperationDialog> {
                       child: NDropdown<OperationType>(
                         label: In18.operationTypeLabel.name.tr,
                         items: OperationType.values,
-                        selectedItem: OperationType.buy,
+                        selectedItem: type,
                         itemText: (item) => item.text,
                         required: true,
+                        onSelected: (value) => setState(
+                          () => type = value ?? OperationType.buy,
+                        ),
                       ),
                     ),
                     const SizedBox(width: NSpacing.n8),
                     Expanded(
                       child: NDatePicker(
                         label: In18.operationDateLabel.name.tr,
+                        selectedDate: operationTime,
+                        onChanged: (value) => setState(
+                          () => operationTime = value,
+                        ),
                       ),
                     ),
                   ],
@@ -77,12 +88,20 @@ class _OperationDialogState extends State<OperationDialog> {
                     Expanded(
                       child: NTextField(
                         label: In18.operationQuantityLabel.name.tr,
+                        controller: _quantityController,
+                        onChanged: (value) => setState(
+                          () => quantity = num.parse(value),
+                        ),
                       ),
                     ),
                     const SizedBox(width: NSpacing.n8),
                     Expanded(
                       child: NTextField(
                         label: In18.operationPriceLabel.name.tr,
+                        controller: _priceController,
+                        onChanged: (value) => setState(
+                          () => quantity = num.parse(value),
+                        ),
                       ),
                     ),
                   ],
@@ -91,7 +110,13 @@ class _OperationDialogState extends State<OperationDialog> {
               Padding(
                 padding: const EdgeInsets.only(top: NSpacing.n16),
                 child: NButton(
-                  onTap: controller.addOperation,
+                  onTap: () => controller.addOperation(
+                    tag: tag,
+                    type: type,
+                    operationTime: operationTime!,
+                    quantity: quantity,
+                    price: price,
+                  ),
                   radius: NRadius.n4,
                   padding: const EdgeInsets.symmetric(vertical: NRadius.n4),
                   color: Theme.of(context).buttonTheme.colorScheme?.primary,
