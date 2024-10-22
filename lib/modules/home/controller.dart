@@ -2,22 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:meus_fiis/modules/home/models/operation.dart';
-import 'package:meus_fiis/modules/home/models/operation_type.dart';
 import 'package:meus_fiis/shared/n_utils/utils/n_durations.dart';
 import 'package:meus_fiis/shared/storage.dart';
 
 class HomeController extends GetxController {
   late final PageController viewController;
   late final RxInt currentIndex;
-  final RxList<Operation> operations = <Operation>[
-    Operation(
-      tag: 'BIME11',
-      operationType: OperationType.buy,
-      operationDateTime: DateTime.now(),
-      quantity: 452,
-      price: 7.26,
-    ),
-  ].obs;
+  final RxList<Operation> operations = <Operation>[].obs;
 
   RxMap<String, List<Operation>> get wallet {
     RxMap<String, List<Operation>> map = <String, List<Operation>>{}.obs;

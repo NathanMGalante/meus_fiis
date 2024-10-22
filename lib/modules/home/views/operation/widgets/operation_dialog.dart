@@ -41,7 +41,7 @@ class _OperationDialogState extends State<OperationDialog> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               NDropdown<String>(
-                label: In18.operationSearchLabel.name.tr,
+                label: In18.operationTagLabel.name.tr,
                 searchItems: (page, pageSize, searchText) => controller.search(
                   page: page,
                   pageSize: pageSize,

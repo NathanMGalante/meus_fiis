@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:meus_fiis/modules/home/controller.dart';
 import 'package:meus_fiis/modules/home/views/operation/controller.dart';
 import 'package:meus_fiis/modules/home/views/operation/widgets/operation_button.dart';
+import 'package:meus_fiis/modules/home/views/operation/widgets/operation_card.dart';
 import 'package:meus_fiis/shared/n_utils/utils/n_spacing.dart';
 
 class OperationsView extends GetView<HomeController> {
@@ -40,10 +41,10 @@ class OperationsView extends GetView<HomeController> {
             for (final operation in controller.operations)
               Padding(
                 padding: const EdgeInsets.symmetric(
-                  vertical: NSpacing.n4,
+                  vertical: NSpacing.n8,
                   horizontal: NSpacing.n16,
                 ),
-                child: Text(operation.tag),
+                child: OperationCard(operation: operation),
               )
           ],
         );

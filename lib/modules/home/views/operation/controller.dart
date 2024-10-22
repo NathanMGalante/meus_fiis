@@ -29,13 +29,23 @@ class OperationController extends GetxController {
         price: price);
     operations.add(operation);
 
+    await _save();
+
+    Get.back();
+    update([OperationIds.view.name]);
+  }
+
+  Future<void> removeOperation(Operation operation) async {
+    operations.remove(operation);
+    await _save();
+    update([OperationIds.view.name]);
+  }
+
+  Future<void> _save() async {
     await Storage.instance.setStringList(
       StorageKeys.operations.name,
       operations.map((operation) => operation.toJson()).toList(),
     );
-
-    Get.back();
-    update([OperationIds.view.name]);
   }
 
   Future<List<String>> search({
