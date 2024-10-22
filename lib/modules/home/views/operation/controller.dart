@@ -7,26 +7,33 @@ import 'package:meus_fiis/modules/home/models/operation_type.dart';
 import 'package:meus_fiis/shared/custom_dio.dart';
 import 'package:meus_fiis/shared/n_utils/utils/n_base64.dart';
 import 'package:meus_fiis/shared/n_utils/utils/n_debounce.dart';
+import 'package:meus_fiis/shared/storage.dart';
 
 enum OperationIds { view }
 
 class OperationController extends GetxController {
   List<Operation> get operations => Get.find<HomeController>().operations;
 
-  void addOperation({
+  Future<void> addOperation({
     required String tag,
     required OperationType type,
     required DateTime operationTime,
     required num quantity,
     required num price,
-  }) {
+  }) async {
     final operation = Operation(
         tag: tag,
         operationType: type,
         operationDateTime: operationTime,
         quantity: quantity,
         price: price);
-    Get.find<HomeController>().operations.add(operation);
+    operations.add(operation);
+
+    await Storage.instance.setStringList(
+      StorageKeys.operations.name,
+      operations.map((operation) => operation.toJson()).toList(),
+    );
+
     Get.back();
     update([OperationIds.view.name]);
   }
