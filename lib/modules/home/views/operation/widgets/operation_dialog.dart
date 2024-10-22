@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:meus_fiis/modules/home/models/operation_type.dart';
 import 'package:meus_fiis/modules/home/views/operation/controller.dart';
+import 'package:meus_fiis/shared/in18.dart';
 import 'package:meus_fiis/shared/n_utils/utils/n_radius.dart';
 import 'package:meus_fiis/shared/n_utils/utils/n_sizing.dart';
 import 'package:meus_fiis/shared/n_utils/utils/n_spacing.dart';
@@ -38,7 +39,7 @@ class _OperationDialogState extends State<OperationDialog> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               NDropdown<String>(
-                label: 'Ativo',
+                label: In18.operationSearchLabel.name.tr,
                 searchItems: (page, pageSize, searchText) => controller.search(
                   page: page,
                   pageSize: pageSize,
@@ -53,7 +54,7 @@ class _OperationDialogState extends State<OperationDialog> {
                   children: [
                     Expanded(
                       child: NDropdown<OperationType>(
-                        label: 'Operação',
+                        label: In18.operationTypeLabel.name.tr,
                         items: OperationType.values,
                         selectedItem: OperationType.buy,
                         itemText: (item) => item.text,
@@ -63,25 +64,25 @@ class _OperationDialogState extends State<OperationDialog> {
                     const SizedBox(width: NSpacing.n8),
                     Expanded(
                       child: NDatePicker(
-                        label: 'Data',
+                        label: In18.operationDateLabel.name.tr,
                       ),
                     ),
                   ],
                 ),
               ),
-              const Padding(
-                padding: EdgeInsets.only(top: NSpacing.n8),
+              Padding(
+                padding: const EdgeInsets.only(top: NSpacing.n8),
                 child: Row(
                   children: [
                     Expanded(
                       child: NTextField(
-                        label: 'Quantidade',
+                        label: In18.operationQuantityLabel.name.tr,
                       ),
                     ),
-                    SizedBox(width: NSpacing.n8),
+                    const SizedBox(width: NSpacing.n8),
                     Expanded(
                       child: NTextField(
-                        label: 'Valor',
+                        label: In18.operationPriceLabel.name.tr,
                       ),
                     ),
                   ],
