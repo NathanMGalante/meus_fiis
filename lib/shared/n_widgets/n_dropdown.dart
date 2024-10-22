@@ -88,14 +88,14 @@ class NDropdown<ItemType> extends StatelessWidget {
                         items: (page, pageSize) => searchItems!(
                           page,
                           pageSize,
-                          searchController.value.text,
+                          searchController.value.text.trim(),
                         ),
                         itemVisibility: (item) {
                           return _getItemText(item)
                               .nNormalize
                               .toUpperCase()
                               .contains(
-                                searchController.value.text.nNormalize
+                                searchController.value.text.trim().nNormalize
                                     .toUpperCase(),
                               );
                         },

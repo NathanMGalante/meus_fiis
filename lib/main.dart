@@ -31,34 +31,30 @@ class MyApp extends StatelessWidget {
       dropdownHintText: In18.sharedSelectionHintText.name.tr,
       searchHintText: In18.sharedSearchHintText.name.tr,
       locale: Locales.ptBR,
-      child: Builder(
-        builder: (context) {
-          return GetMaterialApp(
-            title: 'Meus FIIs',
-            theme: ThemeData(
-              colorScheme: _colorScheme,
-              splashColor: _colorScheme.secondary.withOpacity(0.10),
-              highlightColor: _colorScheme.secondary.withOpacity(0.10),
-              useMaterial3: true,
-              appBarTheme: AppBarTheme(
-                color: _colorScheme.inversePrimary,
-              ),
-              scaffoldBackgroundColor: const Color(0xffDFE4E2),
-            ),
-            translations: In18Messages(),
-            locale: NConfig.of(context).locale,
-            fallbackLocale: Locales.ptBR,
-            initialRoute: Routes.home.route,
-            getPages: [
-              GetPage(
-                name: Routes.home.route,
-                page: () => const HomePage(),
-                binding: HomeBinding(),
-                bindings: [OperationBinding()],
-              ),
-            ],
-          );
-        },
+      child: GetMaterialApp(
+        title: 'Meus FIIs',
+        theme: ThemeData(
+          colorScheme: _colorScheme,
+          splashColor: _colorScheme.secondary.withOpacity(0.10),
+          highlightColor: _colorScheme.secondary.withOpacity(0.10),
+          useMaterial3: true,
+          appBarTheme: AppBarTheme(
+            color: _colorScheme.inversePrimary,
+          ),
+          scaffoldBackgroundColor: const Color(0xffDFE4E2),
+        ),
+        translations: In18Messages(),
+        locale: Locales.ptBR,
+        fallbackLocale: Locales.ptBR,
+        initialRoute: Routes.home.route,
+        getPages: [
+          GetPage(
+            name: Routes.home.route,
+            page: () => const HomePage(),
+            binding: HomeBinding(),
+            bindings: [OperationBinding()],
+          ),
+        ],
       ),
     );
   }

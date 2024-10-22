@@ -100,7 +100,7 @@ class _OperationDialogState extends State<OperationDialog> {
                         label: In18.operationPriceLabel.name.tr,
                         controller: _priceController,
                         onChanged: (value) => setState(
-                          () => quantity = num.parse(value),
+                          () => price = num.parse(value),
                         ),
                       ),
                     ),

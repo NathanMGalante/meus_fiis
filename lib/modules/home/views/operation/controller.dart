@@ -22,11 +22,12 @@ class OperationController extends GetxController {
     required num price,
   }) async {
     final operation = Operation(
-        tag: tag,
-        operationType: type,
-        operationDateTime: operationTime,
-        quantity: quantity,
-        price: price);
+      tag: tag,
+      operationType: type,
+      operationDateTime: operationTime,
+      quantity: quantity,
+      price: price,
+    );
     operations.add(operation);
 
     await _save();
@@ -58,7 +59,7 @@ class OperationController extends GetxController {
         "typeFund": 7,
         "pageNumber": page,
         "pageSize": pageSize,
-        "keyword": searchText
+        "keyword": searchText.trim().toUpperCase()
       };
       final response = await CustomDio.public.get(
         'https://sistemaswebb3-listados.b3.com.br/fundsProxy/fundsCall/GetListedFundsSIG/${mapToBase64(map)}',

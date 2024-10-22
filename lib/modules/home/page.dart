@@ -18,9 +18,9 @@ class HomePage extends GetView<HomeController> {
         onPageChanged: controller.changeView,
         controller: controller.viewController,
         physics: const NeverScrollableScrollPhysics(),
-        children: const [
-          DashboardView(),
-          WalletView(),
+        children: [
+          const DashboardView(),
+          const WalletView(),
           OperationsView(),
         ],
       ),

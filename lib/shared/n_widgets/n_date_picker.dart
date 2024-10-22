@@ -34,7 +34,6 @@ class NDatePicker extends StatelessWidget {
       initialDate: selectedDate,
       firstDate: min,
       lastDate: max,
-      locale: NConfig.of(context).locale,
     );
     if (newDate != null) {
       onChanged?.call(newDate);
