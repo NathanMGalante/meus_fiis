@@ -7,6 +7,7 @@ import 'package:meus_fiis/shared/n_utils/utils/n_radius.dart';
 import 'package:meus_fiis/shared/n_utils/utils/n_sizing.dart';
 import 'package:meus_fiis/shared/n_utils/utils/n_spacing.dart';
 import 'package:meus_fiis/shared/n_widgets/n_button.dart';
+import 'package:meus_fiis/shared/n_widgets/n_date_picker.dart';
 import 'package:meus_fiis/shared/n_widgets/n_dropdown.dart';
 
 class OperationDialog extends StatefulWidget {
@@ -58,10 +59,7 @@ class _OperationDialogState extends State<OperationDialog> {
                     ),
                     const SizedBox(width: NSpacing.n8),
                     Expanded(
-                      child: Container(
-                        color: Colors.grey,
-                        height: NSpacing.n32,
-                      ),
+                      child: NDatePicker(),
                     ),
                   ],
                 ),

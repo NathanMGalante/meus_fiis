@@ -23,8 +23,8 @@ class _NScrollFadeState extends State<NScrollFade> {
   void _listener() {
     setState(() {
       _showFadeLeft = widget.controller.offset > 0;
-      _showFadeRight = widget.controller.offset <
-          widget.controller.position.maxScrollExtent;
+      _showFadeRight =
+          widget.controller.offset < widget.controller.position.maxScrollExtent;
     });
   }
 
@@ -32,11 +32,13 @@ class _NScrollFadeState extends State<NScrollFade> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      setState(() {
-        _showFadeLeft = widget.controller.offset > 0;
-        _showFadeRight = widget.controller.offset <
-            widget.controller.position.maxScrollExtent;
-      });
+      if (widget.controller.positions.isNotEmpty) {
+        setState(() {
+          _showFadeLeft = widget.controller.offset > 0;
+          _showFadeRight = widget.controller.offset <
+              widget.controller.position.maxScrollExtent;
+        });
+      }
     });
     widget.controller.addListener(_listener);
   }

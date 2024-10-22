@@ -5,11 +5,13 @@ class NConfig extends InheritedWidget {
     super.key,
     this.dropdownHintText,
     this.searchHintText,
+    this.locale,
     required super.child,
   });
 
   final String? dropdownHintText;
   final String? searchHintText;
+  final Locale? locale;
 
   static NConfig of(BuildContext context) {
     final NConfig? result =
